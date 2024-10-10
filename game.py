@@ -1,5 +1,6 @@
 import pygame
 import sys
+from StopWatch import StopWatch
 
 #Created off of example from Benjamin Widener
 
@@ -17,7 +18,10 @@ class Game:
         self.egg = pygame.Rect(130, 60, 50, 70)
         self.cursor_rectangle = pygame.Rect(0, 0, 0, 0)
 
-        self.clock = pygame.time.Clock()        
+        self.clock = pygame.time.Clock()
+
+        self.watch =  StopWatch()
+        
     def run(self):
         while True:
             for event in pygame.event.get():
@@ -25,7 +29,18 @@ class Game:
                     pygame.quit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.cursor_rectangle.colliderect(self.egg):
-                        print("stop touching this egg!")
+                        self.watch.startWatch()
+                        print("Hold this egg!")
+                    elif not self.cursor_rectangle.colliderect(self.egg):
+                        self.watch.stopWatch()
+                        print(self.watch.returnTotalTime)
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if self.cursor_rectangle.colliderect(self.egg):
+                        self.watch.stopWatch()
+                        print(self.watch.returnTotalTime())
+
+            self.current_time = pygame.time.get_ticks()
+            
             
             self.display.fill((0, 5, 0)) # Fill display each time
             pygame.draw.rect(self.display, "white", self.egg)
