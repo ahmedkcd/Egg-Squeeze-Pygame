@@ -21,6 +21,10 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.watch =  StopWatch()
+        self.targetTime = 4.5
+        self.scoreRatio = 0;
+        self.egg_inflated = False
+        self.egg_inflating = True
         
     def run(self):
         while True:
@@ -31,13 +35,24 @@ class Game:
                     if self.cursor_rectangle.colliderect(self.egg):
                         self.watch.startWatch()
                         print("Hold this egg!")
-                    elif not self.cursor_rectangle.colliderect(self.egg):
-                        self.watch.stopWatch()
-                        print(self.watch.returnTotalTime)
                 if event.type == pygame.MOUSEBUTTONUP:
-                    if self.cursor_rectangle.colliderect(self.egg):
+                    if self.watch.running:
                         self.watch.stopWatch()
                         print(self.watch.returnTotalTime())
+                        self.scoreRatio = (self.watch.returnTotalTime() / self.targetTime) * 100
+                        
+                        if(self.watch.returnTotalTime() > self.targetTime):
+                            print("You broke the egg! " + "%.2f" % (self.scoreRatio) + "%")
+
+
+                if self.cursor_rectangle.colliderect(self.egg):
+                    if(not self.egg_inflated):
+                        self.egg.inflate_ip(10, 10)
+                    self.egg_inflated = True
+                else:
+                    if(self.egg_inflated):
+                        self.egg.inflate_ip(-10, -10)
+                        self.egg_inflated = False
 
             self.current_time = pygame.time.get_ticks()
             
@@ -55,7 +70,30 @@ class Game:
 
             
             self.clock.tick(60)
+
+    def start_screen(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        Game.run(self)
+
+            print("Welcome to the Egg Squeeze! Press space to begin.")
+
+        self.display.fill(0, 5, 0)
+        self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0,0))
+        pygame.display.update()
+
+    def loss_screen(self):
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+            
         
-Game().run()      
+        
+Game().start_screen()      
 
 
