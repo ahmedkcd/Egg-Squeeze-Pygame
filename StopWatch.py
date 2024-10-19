@@ -7,6 +7,7 @@ class StopWatch:
         self.startTime = None
         self.elapsedTime = 0
         self.running = False
+        self.timesPlayed = 0
 
     def startWatch(self):
         if not self.running:
@@ -27,3 +28,7 @@ class StopWatch:
         if self.running:
             totalTime += time.time() - self.startTime
         return totalTime
+    def incrementTimesPlayed(self):
+        self.timesPlayed = self.timesPlayed + 1
+    def getTimesPlayed(self):
+        return self.timesPlayed
